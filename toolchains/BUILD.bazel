@@ -1,0 +1,89 @@
+load("@bazel_skylib//rules/directory:directory.bzl", "directory")
+load("@llvm//toolchain:cc_toolchain.bzl", "cc_toolchain")
+load("@llvm//toolchain:merged_resource_directory.bzl", "merged_resource_directory")
+load("@llvm//toolchain:selects.bzl", "platform_cc_tool_map", "platform_module_map", "platform_resource_dir")
+load("@llvm//toolchain/args:resource_directory_args.bzl", "resource_directory_args")
+load("@rules_cc//cc/toolchains:args.bzl", "cc_args")
+load("@rules_cc//cc/toolchains/args:sysroot.bzl", "cc_sysroot")
+
+package(default_visibility = ["//visibility:public"])
+
+# Phase 4 replaces this glob with the built glibc 2.44 install tree.
+directory(
+    name = "glibc_sysroot",
+    srcs = glob(["glibc-sysroot/**"]),
+)
+
+cc_sysroot(
+    name = "cmposer_sysroot",
+    sysroot = ":glibc_sysroot",
+    allowlist_include_directories = [":glibc_sysroot"],
+)
+
+cc_args(
+    name = "cmposer_sysroot_includes",
+    actions = ["@rules_cc//cc/toolchains/actions:compile_actions"],
+    args = [
+        "-isystem",
+        "{sysroot}/usr/include",
+        "-isystem",
+        "{sysroot}/usr/include/aarch64-linux-gnu",
+    ],
+    format = {"sysroot": ":glibc_sysroot"},
+    data = [":glibc_sysroot"],
+)
+
+cc_args(
+    name = "cmposer_sysroot_libs",
+    actions = ["@rules_cc//cc/toolchains/actions:link_actions"],
+    args = [
+        "-L",
+        "{sysroot}/usr/lib",
+        "-L",
+        "{sysroot}/usr/lib/aarch64-linux-gnu",
+    ],
+    format = {"sysroot": ":glibc_sysroot"},
+    data = [":glibc_sysroot"],
+)
+
+# What are these ? and how are they connected?
+merged_resource_directory(
+    name = "cmposer_resource_directory",
+    parent = platform_resource_dir("linux", "aarch64"),
+    srcs = ["@llvm//runtimes:resource_directory"],
+)
+
+resource_directory_args(
+    name = "cmposer_resource_directory_args",
+    compile_directory = platform_resource_dir("linux", "aarch64"),
+    link_directory = ":cmposer_resource_directory",
+)
+
+cc_toolchain(
+    name = "cmposer_cc_toolchain",
+    tool_map = platform_cc_tool_map("linux", "aarch64"),  # What is this?
+    module_map = platform_module_map("linux", "aarch64"), # What is this?
+    supports_gnu_param_file_quoting = True,
+    extra_args = [
+        ":cmposer_resource_directory_args",
+        ":cmposer_sysroot",
+        ":cmposer_sysroot_includes",
+        ":cmposer_sysroot_libs",
+    ],
+)
+
+toolchain(
+    name = "cmposer_aarch64",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+        "//toolchains/libc:cmposer",
+    ],
+    toolchain = ":cmposer_cc_toolchain",
+    toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+)
+

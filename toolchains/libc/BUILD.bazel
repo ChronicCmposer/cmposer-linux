@@ -1,0 +1,10 @@
+package(default_visibility = ["//visibility:public"])
+
+constraint_setting(
+    name = "variant",
+    default_constraint_value = ":unconstrained",
+)
+
+constraint_value(name = "unconstrained", constraint_setting = ":variant")
+constraint_value(name = "bootstrap", constraint_setting = ":variant")
+constraint_value(name = "cmposer", constraint_setting = ":variant")

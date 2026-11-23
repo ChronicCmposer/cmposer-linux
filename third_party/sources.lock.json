@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "sources": [
+    {
+      "name": "bash",
+      "version": "5.3.20",
+      "urls": [
+        "https://ftp.gnu.org/gnu/bash/bash-5.3.20.tar.gz"
+      ],
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "strip_prefix": "bash-5.3.20",
+      "patches": [
+        "bash-001-0001-fix-cve.patch",
+        "bash-001-0002-fix-build.patch"
+      ],
+      "patch_strip": 1
+    },
+    {
+      "name": "make",
+      "version": "4.4.1",
+      "urls": [
+        "https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz"
+      ],
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "strip_prefix": "make-4.4.1"
+    },
+    {
+      "name": "glibc",
+      "version": "2.44",
+      "urls": [
+        "https://ftp.gnu.org/gnu/glibc/glibc-2.44.tar.xz"
+      ],
+      "sha256": "37f600f2bef3c5e8300147059568b2a2e40a7ad6ccc65ce942556d49429cc667",
+      "strip_prefix": "glibc-2.44"
+    },
+    {
+      "name": "linux",
+      "version": "6.18.62",
+      "urls": [
+        "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.62.tar.xz"
+      ],
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "strip_prefix": "linux-6.18.62"
+    },
+    {
+      "name": "systemd",
+      "version": "262.2",
+      "urls": [
+        "https://github.com/systemd/systemd/archive/refs/tags/v262.2.tar.gz"
+      ],
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "strip_prefix": "systemd-262.2"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+
+load("@bazel_skylib//rules/directory:directory.bzl", "directory")
+
+package(default_visibility = ["//visibility:public"])
+
+
+directory(
+    name = "src",
+    srcs = glob(
+        ["**"],
+        exclude = [
+            "BUILD.bazel",
+            "**/BUILD.bazel",
+        ],
+    ),
+)
+
+

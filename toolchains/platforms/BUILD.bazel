@@ -1,0 +1,26 @@
+load("//toolchains:glibc.bzl", "BOOTSTRAP_GLIBC", "TARGET_GLIBC")
+
+package(default_visibility = ["//visibility:public"])
+
+platform(
+    name = "linux_aarch64_bootstrap",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+        "@llvm//constraints/libc:gnu." + BOOTSTRAP_GLIBC,
+        "@llvm//constraints/cxxstdlib:libcxx",
+        "//toolchains/libc:bootstrap",
+    ],
+)
+
+platform(
+    name = "linux_aarch64_cmposer",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+        "@llvm//constraints/libc:gnu." + TARGET_GLIBC,
+        "@llvm//constraints/cxxstdlib:libcxx",
+        "//toolchains/libc:cmposer",
+    ],
+)
+

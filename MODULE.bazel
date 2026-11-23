@@ -7,6 +7,7 @@ module(
 
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "rules_cc", version = "0.2.25")
 bazel_dep(name = "rules_shell", version = "0.8.0")
 bazel_dep(name = "rules_pkg", version = "1.3.0")
 bazel_dep(name = "llvm", version = "0.8.26")
@@ -18,7 +19,23 @@ toolchain.exec(arch = "aarch64", os = "linux")
 toolchain.target(arch = "aarch64", os = "linux")
 
 use_repo(toolchain, "llvm_toolchains")
-register_toolchains("@llvm_toolchains//:linux_aarch64_to_linux_aarch64")
+register_toolchains(
+   "//toolchains:cmposer_aarch64",
+   "@llvm_toolchains//:linux_aarch64_to_linux_aarch64",
+)
+
+sources = use_extension("//third_party:sources.bzl", "sources")
+sources.index(file = "//third_party:sources.lock.json")
+
+use_repo(
+    sources,
+    "source_bash",
+    "source_glibc",
+    "source_linux",
+    "source_make",
+    "source_systemd",
+)
+
 
 
 

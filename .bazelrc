@@ -1,0 +1,14 @@
+
+build:bootstrap --platforms=//toolchains/platforms:linux_aarch64_bootstrap
+build:bootstrap --host_platform=//toolchains/platforms:linux_aarch64_bootstrap
+
+build:target    --platforms=//toolchains/platforms:linux_aarch64_cmposer
+build:target    --host_platform=//toolchains/platforms:linux_aarch64_bootstrap
+
+
+# Populate with canonical archive basenames: bash-5.3.20.tar.gz, make-4.4.1.tar.gz, ...
+common --distdir=/var/cache/cmposer-distdir
+
+# CI offline gate: fail instead of falling back to the network.
+build:offline --repository_disable_download
+
